@@ -51,6 +51,7 @@
 ## 4. Interfejs Użytkownika:
 
 - **GUI:** Graficzny interfejs użytkownika (GUI) umożliwiający łatwe nawigowanie po aplikacji i dostęp do wszystkich funkcji.
+- **Baza Danych:** Baza danych na ksiazki uzytkownikow ...
 
 ## 5. Dodatkowe Funkcje?:
 
