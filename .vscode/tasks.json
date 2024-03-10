@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build my project",
+            "type": "shell",
+            "command": "/usr/bin/clang++",
+            "args": [
+                "-g",
+                "-std=c++17",
+                "${workspaceFolder}/Main/main.cpp",
+                "${workspaceFolder}/Main/funkcje.cpp",
+                "-o",
+                "${workspaceFolder}/output", // Output file located in the workspace directory
+                "-I${workspaceFolder}/Main"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Generated task by ChatGPT to compile a C++ project using clang++ on macOS with source files in the Main folder and output in the workspace directory."
+        }
+    ]
+}
+

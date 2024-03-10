@@ -10,16 +10,15 @@ using std::cout, std::cin, std::endl;
 void dodaj(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
     std::string imie;
     std::string email;
-    size_t numerTelefonu;
-    size_t numerID = ++last_id;  // Automatyczne przypisanie numeru ID.
+    std::string numerTelefonu;
+    unsigned int numerID = ++last_id;  // Automatyczne przypisanie numeru ID.
     Adres adres;
     cout << "Podaj imie i nazwisko: ";
     std::getline(cin, imie);
     cout << "Podaj email: ";
     std::getline(cin, email);
     cout << "Podaj numer telefonu: ";
-    cin >> numerTelefonu;
-    cin.ignore();
+    std::getline(cin, numerTelefonu);
     cout << "Podaj ulice: ";
     std::getline(cin, adres.ulica);
     cout << "Podaj numer domu: ";
@@ -47,7 +46,7 @@ void wyswietl(std::vector<Czytelnik>& czytelnicy) {
 }
 
 // Funkcja umożliwiająca edycję danych czytelnika.
-void edytuj(std::vector<Czytelnik>& czytelnicy, int index) {
+void edytuj(std::vector<Czytelnik>& czytelnicy, size_t index) {
     cout << "1. Edytowanie imienia" << endl;
     cout << "2. Edytowanie emaila" << endl;
     cout << "3. Edytowanie numeru telefonu" << endl;
@@ -84,14 +83,14 @@ void edytuj(std::vector<Czytelnik>& czytelnicy, int index) {
 }
 
 // Funkcja usuwająca czytelnika z listy.
-void usun(std::vector<Czytelnik>& czytelnicy, int index) { czytelnicy.erase(czytelnicy.begin() + index); }
+void usun(std::vector<Czytelnik>& czytelnicy, size_t index) { czytelnicy.erase(czytelnicy.begin() + index); }
 
 // Funkcja dodająca nową książkę do listy.
 void dodaj(std::vector<Ksiazka>& ksiazki) {
     std::string tytul;
     std::string autor;
     std::string wydawnictwo;
-    size_t rokWydania;
+    unsigned int rokWydania;
     Lokalizacja lokalizacja;
     cout << "Podaj tytul: ";
     std::getline(cin, tytul);
@@ -121,7 +120,7 @@ void wyswietl(std::vector<Ksiazka>& ksiazki) {
 }
 
 // Funkcja umożliwiająca edycję danych książki.
-void edytuj(std::vector<Ksiazka>& ksiazki, int index) {
+void edytuj(std::vector<Ksiazka>& ksiazki, size_t index) {
     cout << "1. Edytowanie tytulu" << endl;
     cout << "2. Edytowanie autora" << endl;
     cout << "3. Edytowanie wydawnictwa" << endl;
@@ -163,4 +162,4 @@ void edytuj(std::vector<Ksiazka>& ksiazki, int index) {
 }
 
 // Funkcja usuwająca książkę z listy.
-void usun(std::vector<Ksiazka>& ksiazki, int index) { ksiazki.erase(ksiazki.begin() + index); }
+void usun(std::vector<Ksiazka>& ksiazki, size_t index) { ksiazki.erase(ksiazki.begin() + index); }

@@ -9,9 +9,9 @@ int main(void) {
 
     // Tworzenie wektora czytelnikow
     std::vector<Czytelnik> czytelnicy = {
-        {"Jan Kowalski", "jan.kowalski@example.com", 123456789, 1, {"Krakowska", 10}},
-        {"Anna Nowak", "anna.nowak@example.com", 987654321, 2, {"Warszawska", 20}},
-        {"Piotr Zielinski", "piotr.zielinski@example.com", 456789123, 3, {"Poznanska", 30}}};
+        {"Jan Kowalski", "jan.kowalski@example.com", "123456789", 1, {"Krakowska", 10}},
+        {"Anna Nowak", "anna.nowak@example.com", "987654321", 2, {"Warszawska", 20}},
+        {"Piotr Zielinski", "piotr.zielinski@example.com", "456789123", 3, {"Poznanska", 30}}};
 
     // Tworzenie wektora ksiazek
     std::vector<Ksiazka> ksiazki = {
@@ -51,7 +51,7 @@ int main(void) {
                 // Edytuj Czytelnika
                 wyswietl(czytelnicy);
                 cout << "Wybierz, którego czytelnika chcesz edytować: ";
-                int index;
+                size_t index;
                 cin >> index;
                 cin.ignore();
                 edytuj(czytelnicy, index - 1);
@@ -60,7 +60,7 @@ int main(void) {
                 // Usuń Czytelnika
                 wyswietl(czytelnicy);
                 cout << "Wybierz, którego czytelnika chcesz usunąć: ";
-                int index2;
+                size_t index2;
                 cin >> index2;
                 cin.ignore();
                 usun(czytelnicy, index2 - 1);
@@ -77,7 +77,7 @@ int main(void) {
                 // Edytuj Książkę
                 wyswietl(ksiazki);
                 cout << "Wybierz, którą książkę chcesz edytować: ";
-                int index3;
+                size_t index3;
                 cin >> index3;
                 cin.ignore();
                 edytuj(ksiazki, index3 - 1);
@@ -86,7 +86,7 @@ int main(void) {
                 // Usuń Książkę
                 wyswietl(ksiazki);
                 cout << "Wybierz, którą książkę chcesz usunąć: ";
-                int index4;
+                size_t index4;
                 cin >> index4;
                 cin.ignore();
                 usun(ksiazki, index4 - 1);
