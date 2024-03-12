@@ -8,9 +8,9 @@
 
 void menuGlowne();
 
-void menuCzytelnikow();
+void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id);
 
-void menuKsiazek();
+void menuKsiazek(std::vector<Ksiazka>& ksiazki);
 
 void dodaj(std::vector<Czytelnik>& czytelnicy, size_t& last_id);
 
