@@ -6,6 +6,12 @@
 
 #include "struktury.h"
 
+void menuGlowne();
+
+void menuCzytelnikow();
+
+void menuKsiazek();
+
 void dodaj(std::vector<Czytelnik>& czytelnicy, size_t& last_id);
 
 void wyswietl(std::vector<Czytelnik>& czytelnicy);

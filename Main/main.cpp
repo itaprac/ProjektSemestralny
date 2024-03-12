@@ -22,80 +22,102 @@ int main(void) {
 
     size_t last_id = czytelnicy.size();  // Przypisanie ostatniego numeru ID czytelnika
 
-    int wybor;
-    while (true) {
-        // Wyświetlanie opcji menu
-        cout << "-----------Menu-----------" << endl;
-        cout << "1. Dodaj czytelnika" << endl;
-        cout << "2. Wyświetl listę czytelników" << endl;
-        cout << "3. Edytuj czytelnika" << endl;
-        cout << "4. Usuń czytelnika" << endl;
-        cout << "5. Dodaj książkę" << endl;
-        cout << "6. Wyświetl listę książek" << endl;
-        cout << "7. Edytuj książkę" << endl;
-        cout << "8. Usuń książkę" << endl;
-        cout << "9. Wyjście" << endl;
-        cout << "Wybór: ";
-        cin >> wybor;
-        cin.ignore();  // Czyszczenie bufora wejściowego
-        switch (wybor) {
+    int wybor1;
+    do {
+        menuGlowne();
+        cin >> wybor1;
+        cin.ignore();
+        switch (wybor1) {
             case 1:
-                // Dodaj nowego Czytelnika
-                dodaj(czytelnicy, last_id);
+                // zardzadanie czytelnikami
+                int wybor2;
+                do {
+                    menuCzytelnikow();
+                    cin >> wybor2;
+                    cin.ignore();
+                    switch (wybor2) {
+                        case 1:
+                            // Dodaj nowego Czytelnika
+                            dodaj(czytelnicy, last_id);
+                            break;
+                        case 2:
+                            // Wyświetl listę obiektów Czytelnik
+                            wyswietl(czytelnicy);
+                            cout << "Naciśnij Enter, aby kontynuować...";
+                            cin.get();  // Oczekiwanie na naciśnięcie klawisza Enter
+                            break;
+                        case 3:
+                            // Edytuj Czytelnika
+                            wyswietl(czytelnicy);
+                            cout << "Wybierz, którego czytelnika chcesz edytować: ";
+                            size_t index;
+                            cin >> index;
+                            cin.ignore();
+                            edytuj(czytelnicy, index - 1);
+                            break;
+                        case 4:
+                            // Usuń Czytelnika
+                            wyswietl(czytelnicy);
+                            cout << "Wybierz, którego czytelnika chcesz usunąć: ";
+                            size_t index2;
+                            cin >> index2;
+                            cin.ignore();
+                            usun(czytelnicy, index2 - 1);
+                            break;
+                        default:
+                            // cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
+                            break;
+                    }
+                } while (wybor2 != 5);
                 break;
             case 2:
-                // Wyświetl listę obiektów Czytelnik
-                wyswietl(czytelnicy);
+                // zarzadanie ksiazkami
+                int wybor3;
+                do {
+                    menuKsiazek();
+                    cin >> wybor3;
+                    cin.ignore();
+                    switch (wybor3) {
+                        case 1:
+                            // Dodaj nową Książkę
+                            dodaj(ksiazki);
+                            break;
+                        case 2:
+                            // Wyświetl listę obiektów Książka
+                            wyswietl(ksiazki);
+                            cout << "Naciśnij Enter, aby kontynuować...";
+                            cin.get();  // Oczekiwanie na naciśnięcie klawisza Enter
+                            break;
+                        case 3:
+                            // Edytuj Książkę
+                            wyswietl(ksiazki);
+                            cout << "Wybierz, którą książkę chcesz edytować: ";
+                            size_t index3;
+                            cin >> index3;
+                            cin.ignore();
+                            edytuj(ksiazki, index3 - 1);
+                            break;
+                        case 4:
+                            // Usuń Książkę
+                            wyswietl(ksiazki);
+                            cout << "Wybierz, którą książkę chcesz usunąć: ";
+                            size_t index4;
+                            cin >> index4;
+                            cin.ignore();
+                            usun(ksiazki, index4 - 1);
+                            break;
+                        default:
+                            // cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
+                            break;
+                    }
+                } while (wybor3 != 5);
                 break;
             case 3:
-                // Edytuj Czytelnika
-                wyswietl(czytelnicy);
-                cout << "Wybierz, którego czytelnika chcesz edytować: ";
-                size_t index;
-                cin >> index;
-                cin.ignore();
-                edytuj(czytelnicy, index - 1);
+                cout << "Wychodzenie z programu..." << endl;
                 break;
-            case 4:
-                // Usuń Czytelnika
-                wyswietl(czytelnicy);
-                cout << "Wybierz, którego czytelnika chcesz usunąć: ";
-                size_t index2;
-                cin >> index2;
-                cin.ignore();
-                usun(czytelnicy, index2 - 1);
-                break;
-            case 5:
-                // Dodaj nową Książkę
-                dodaj(ksiazki);
-                break;
-            case 6:
-                // Wyświetl listę obiektów Książka
-                wyswietl(ksiazki);
-                break;
-            case 7:
-                // Edytuj Książkę
-                wyswietl(ksiazki);
-                cout << "Wybierz, którą książkę chcesz edytować: ";
-                size_t index3;
-                cin >> index3;
-                cin.ignore();
-                edytuj(ksiazki, index3 - 1);
-                break;
-            case 8:
-                // Usuń Książkę
-                wyswietl(ksiazki);
-                cout << "Wybierz, którą książkę chcesz usunąć: ";
-                size_t index4;
-                cin >> index4;
-                cin.ignore();
-                usun(ksiazki, index4 - 1);
-                break;
-            case 9:
-                // Wyjdź z programu
-                return 0;
             default:
-                cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
+                // cout << "Nieprawidlowy wybor" << endl;
+                break;
         }
-    }
+    } while (wybor1 != 3);
 }
