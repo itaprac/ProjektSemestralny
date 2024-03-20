@@ -22,12 +22,12 @@ int main(void) {
 
     size_t last_id = czytelnicy.size();  // Przypisanie ostatniego numeru ID czytelnika
 
-    int wybor1;
+    int wybor;
     do {
         menuGlowne();
-        cin >> wybor1;
-        cin.ignore();
-        switch (wybor1) {
+        cin >> wybor;
+        cin.ignore();  // Czyszczenie entera
+        switch (wybor) {
             case 1:
                 // zardzadanie czytelnikami
                 menuCzytelnikow(czytelnicy, last_id);
@@ -43,5 +43,5 @@ int main(void) {
                 // cout << "Nieprawidlowy wybor" << endl;
                 break;
         }
-    } while (wybor1 != 3);
+    } while (wybor != 3);
 }

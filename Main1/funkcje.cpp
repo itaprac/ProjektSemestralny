@@ -37,7 +37,7 @@ void menuGlowne() {
 
 // Funkcja pokazujaca menu zarzadania czytelnikami
 void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
-    int wybor2;
+    int wybor;
     do {
         system("clear");
         cout << "\n=========================================\n"
@@ -50,15 +50,15 @@ void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
              << "5. Powrot\n"
              << "=========================================\n"
              << "Wybierz opcje: ";
-        cin >> wybor2;
+        cin >> wybor;
         cin.ignore();
-        switch (wybor2) {
+        switch (wybor) {
             case 1:
                 // Dodaj nowego Czytelnika
                 dodaj(czytelnicy, last_id);
                 break;
             case 2:
-                // Wyświetl listę obiektów Czytelnik
+                // Wyświetl listę  Czytelnikow
                 wyswietl(czytelnicy);
                 cout << "Naciśnij Enter, aby kontynuować...";
                 cin.get();  // Oczekiwanie na naciśnięcie klawisza Enter
@@ -87,12 +87,12 @@ void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
                 // cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
                 break;
         }
-    } while (wybor2 != 5);
+    } while (wybor != 5);
 }
 
 // Funkcja pokazujaca menu zarzadania ksiazkami
 void menuKsiazek(std::vector<Ksiazka>& ksiazki) {
-    int wybor3;
+    int wybor;
     do {
         system("clear");
         cout << "\n=========================================\n"
@@ -105,9 +105,9 @@ void menuKsiazek(std::vector<Ksiazka>& ksiazki) {
              << "5. Powrot\n"
              << "=========================================\n"
              << "Wybierz opcje: ";
-        cin >> wybor3;
+        cin >> wybor;
         cin.ignore();
-        switch (wybor3) {
+        switch (wybor) {
             case 1:
                 // Dodaj nową Książkę
                 dodaj(ksiazki);
@@ -122,25 +122,25 @@ void menuKsiazek(std::vector<Ksiazka>& ksiazki) {
                 // Edytuj Książkę
                 wyswietl(ksiazki);
                 cout << "Wybierz, którą książkę chcesz edytować: ";
-                size_t index3;
-                cin >> index3;
+                size_t index1;
+                cin >> index1;
                 cin.ignore();
-                edytuj(ksiazki, index3 - 1);
+                edytuj(ksiazki, index1 - 1);
                 break;
             case 4:
                 // Usuń Książkę
                 wyswietl(ksiazki);
                 cout << "Wybierz, którą książkę chcesz usunąć: ";
-                size_t index4;
-                cin >> index4;
+                size_t index2;
+                cin >> index2;
                 cin.ignore();
-                usun(ksiazki, index4 - 1);
+                usun(ksiazki, index2 - 1);
                 break;
             default:
                 // cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
                 break;
         }
-    } while (wybor3 != 5);
+    } while (wybor != 5);
 }
 
 // Funkcja dodająca nowego czytelnika do listy.
