@@ -7,11 +7,15 @@
 #include "dane.h"       // Dołączenie pliku nagłówkowego z danymi
 #include "struktury.h"  // Dołączenie pliku nagłówkowego ze strukturami.
 
+RejestratorZdarzen* RejestratorZdarzen::rejestratorZdarzen = nullptr;
+
 void gen_data(Czytelnik* czytelnik);
 
 void dodaj(std::vector<Czytelnik>& czytelnicy, size_t& last_id);
 
 void wyswietl(std::vector<Czytelnik>& czytelnicy);
+
+void wyswietl(std::vector<Czytelnik>& czytelnicy, size_t index);
 
 void edytuj(std::vector<Czytelnik>& czytelnicy, size_t index);
 
@@ -33,6 +37,14 @@ void stworz(Ksiazka**& ksiazki, size_t rozmiar, size_t& liczba_ksiazek);
 
 void usun(Ksiazka**& ksiazki, size_t& liczba_ksiazek);
 
+size_t szukaj_po_id(std::vector<Czytelnik>& czytelnicy, size_t id);
+
+void szukaj(std::vector<Czytelnik>& czytelnicy);
+
+size_t szukaj_po_imie(std::vector<Czytelnik>& czytelnicy, std::string imie);
+
+void wypozycz(std::vector<Czytelnik>& czytelnicy, Ksiazka**& ksiazki, size_t liczba_ksiazek);
+
 using std::cout, std::cin, std::endl;
 
 // Funkcja pokazujaca menu glowne
@@ -46,10 +58,11 @@ void menuGlowne() {
          << "3. Wyjscie\n"
          << "========================================\n"
          << "Wybierz opcje: ";
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono menu glowne");
 }
 
 // Funkcja pokazujaca menu zarzadania czytelnikami
-void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
+void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id, Ksiazka**& ksiazki, size_t& liczba_ksiazek) {
     int wybor;
     do {
         system("clear");
@@ -61,11 +74,15 @@ void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
              << "3. Edytuj czytelnika\n"
              << "4. Usun czytelnika\n"
              << "5. Generuj czytelnikow\n"
-             << "6. Powrot\n"
+             << "6. Szukaj czytelnika\n"
+             << "7. Wypozycz ksiazke\n"
+             << "8. Powrot\n"
              << "=========================================\n"
              << "Wybierz opcje: ";
+        RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono menu zarzadzania czytelnikami");
         cin >> wybor;
         cin.ignore();
+        RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wybrano opcje " + std::to_string(wybor));
         switch (wybor) {
             case 1:
                 // Dodaj nowego Czytelnika
@@ -103,12 +120,22 @@ void menuCzytelnikow(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
                 stworz(czytelnicy, last_id, ilosc);
                 break;
             case 6:
+                szukaj(czytelnicy);
+                cout << "Naciśnij Enter, aby kontynuować...";
+                cin.get();  // Oczekiwanie na naciśnięcie klawisza Enter
+                break;
+            case 7:
+                wypozycz(czytelnicy, ksiazki, liczba_ksiazek);
+                break;
+            case 8:
                 break;
             default:
                 // cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
                 break;
         }
-    } while (wybor != 6);
+
+    } while (wybor != 7);
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Powrot do menu glownego");
 }
 
 // Funkcja pokazujaca menu zarzadania ksiazkami
@@ -127,8 +154,10 @@ void menuKsiazek(Ksiazka**& ksiazki, size_t& liczba_ksiazek) {
              << "6. Powrot\n"
              << "=========================================\n"
              << "Wybierz opcje: ";
+        RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono menu zarzadzania ksiazkami");
         cin >> wybor;
         cin.ignore();
+        RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wybrano opcje " + std::to_string(wybor));
         switch (wybor) {
             case 1:
                 // Dodaj nową Książkę
@@ -172,7 +201,9 @@ void menuKsiazek(Ksiazka**& ksiazki, size_t& liczba_ksiazek) {
                 // cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
                 break;
         }
+
     } while (wybor != 6);
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Powrot do menu glownego");
 }
 
 // Funkcja dodająca nowego czytelnika do listy.
@@ -219,24 +250,11 @@ void dodaj(std::vector<Czytelnik>& czytelnicy, size_t& last_id) {
     poprzednia_pozycja = pozycja + 2;
     nowyCzytelnik.setNumerDomu(
         std::stoi(daneWejsciowe.substr(poprzednia_pozycja, daneWejsciowe.size() - poprzednia_pozycja)));
-    czytelnicy.push_back(nowyCzytelnik);  // Dodanie nowego czytelnika do listy.
-    // std::string imie;
-    // std::string email;
-    // std::string numerTelefonu;
-    // unsigned int numerID = ++last_id;  // Automatyczne przypisanie numeru ID.
-    // Adres adres;
-    // cout << "Podaj imie i nazwisko: ";
-    // std::getline(cin, imie);
-    // cout << "Podaj email: ";
-    // std::getline(cin, email);
-    // cout << "Podaj numer telefonu: ";
-    // std::getline(cin, numerTelefonu);
-    // cout << "Podaj ulice: ";
-    // std::getline(cin, adres.ulica);
-    // cout << "Podaj numer domu: ";
-    // cin >> adres.numerDomu;
-    // cin.ignore();
-    // czytelnicy.push_back({imie, email, numerTelefonu, numerID, adres});  // Dodanie nowego czytelnika do listy.
+
+    Czytelnik nowy(std::move(nowyCzytelnik));
+    czytelnicy.push_back(nowy);  // Dodanie nowego czytelnika do listy.
+
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Dodano nowego czytelnika");
 }
 
 // Funkcja wyświetlająca listę czytelników.
@@ -247,25 +265,39 @@ void wyswietl(std::vector<Czytelnik>& czytelnicy) {
     cout << "            Lista Czytelnikow          \n";
     cout << "=========================================\n";
     int i = 1;
-    for (const Czytelnik& czytelnik : czytelnicy) {
-        cout << i++ << ". " << czytelnik.getImie() << endl
-             << "   Email: " << czytelnik.getEmail() << endl
-             << "   Numer telefonu: " << czytelnik.getNumerTelefonu() << endl
-             << "   Numer ID: " << czytelnik.getNumerID() << endl
-             << "   Adres: " << czytelnik.getUlica() << " " << czytelnik.getNumerDomu() << endl
-             << "   Wypozyczone ksiazki: ";
-        if (czytelnik.getWypozyczoneKsiazki() ==
-            nullptr) {  // Sprawdzenie, czy wektor wypozyczonych ksiazek jest pusty.
-            cout << "Brak";
-        } else {
-            for (size_t i = 0; i < czytelnik.getLiczbaWypozyczonych(); i++) {
-                cout << czytelnik.getWypozyczoneKsiazki()[i].tytul << " - "
-                     << czytelnik.getWypozyczoneKsiazki()[i].autor << ", ";
-            }
-        }
-        cout << "\n-----------------------------------------\n";
+    for (Czytelnik& czytelnik : czytelnicy) {
+        czytelnik.wyswietl();
+        //     cout << i++ << ". " << czytelnik.getImie() << endl
+        //          << "   Email: " << czytelnik.getEmail() << endl
+        //          << "   Numer telefonu: " << czytelnik.getNumerTelefonu() << endl
+        //          << "   Numer ID: " << czytelnik.getNumerID() << endl
+        //          << "   Adres: " << czytelnik.getUlica() << " " << czytelnik.getNumerDomu() << endl
+        //          << "   Wypozyczone ksiazki: ";
+        //     czytelnik.setLicznikWyswietlen(czytelnik.getLicznikWyswietlen() + 1);
+        //     if (czytelnik.getWypozyczoneKsiazki() ==
+        //         nullptr) {  // Sprawdzenie, czy wektor wypozyczonych ksiazek jest pusty.
+        //         cout << "Brak";
+        //     } else {
+        //         for (size_t i = 0; i < czytelnik.getLiczbaWypozyczonych(); i++) {
+        //             cout << czytelnik.getWypozyczoneKsiazki()[i].tytul << " - "
+        //                  << czytelnik.getWypozyczoneKsiazki()[i].autor << ", ";
+        //         }
+        //     }
+        //     cout << "\n-----------------------------------------\n";
     }
     cout << "=========================================\n";
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono liste czytelnikow");
+}
+
+void wyswietl(std::vector<Czytelnik>& czytelnicy, size_t index) {
+    if (index == -1) {
+        cout << "\nBrak czytelnika" << endl;
+        return;
+    }
+    cout << "\nZnaleziony czytelnik:";
+    czytelnicy[index].wyswietl();
+    cout << "\n-----------------------------------------\n";
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono znalezionego czytelnika");
 }
 
 // Funkcja umożliwiająca edycję danych czytelnika.
@@ -324,11 +356,36 @@ void edytuj(std::vector<Czytelnik>& czytelnicy, size_t index) {
                 break;
         }
         cout << "-----------------------------------------\n";
+        RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Edytowano dane czytelnika");
     } while (wybor != 5);
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Powrot do menu zarzadzania czytelnikami");
 }
 
 // Funkcja usuwająca czytelnika z listy.
-void usun(std::vector<Czytelnik>& czytelnicy, size_t index) { czytelnicy.erase(czytelnicy.begin() + index); }
+void usun(std::vector<Czytelnik>& czytelnicy, size_t index) {
+    czytelnicy.erase(czytelnicy.begin() + index);
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Usunieto czytelnika");
+}
+
+// wypozycz ksiazke
+void wypozycz(std::vector<Czytelnik>& czytelnicy, Ksiazka**& ksiazki, size_t liczba_ksiazek) {
+    system("clear");
+    cout << "\n=========================================\n"
+         << "           Wypozyczanie Ksiazki          \n"
+         << "=========================================\n";
+    wyswietl(czytelnicy);
+    cout << "Wybierz czytelnika: ";
+    size_t index_czytelnika;
+    cin >> index_czytelnika;
+    cin.ignore();
+    wyswietl(ksiazki, liczba_ksiazek);
+    cout << "Wybierz ksiazke: ";
+    size_t index_ksiazki;
+    cin >> index_ksiazki;
+    cin.ignore();
+    czytelnicy[index_czytelnika - 1].wypozyczKsiazke(*ksiazki[index_ksiazki - 1]);
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wypozyczono ksiazke");
+}
 
 // Funkcja dodająca nową książkę do listy.
 void dodaj(Ksiazka**& ksiazki, size_t& liczba_ksiazek) {
@@ -336,34 +393,39 @@ void dodaj(Ksiazka**& ksiazki, size_t& liczba_ksiazek) {
     cout << "\n=========================================\n";
     cout << "          Dodawanie Ksiazki          \n";
     cout << "=========================================\n";
-    std::string tytul;
-    std::string autor;
-    std::string wydawnictwo;
-    unsigned int rokWydania;
-    Lokalizacja lokalizacja;
-    cout << "Podaj tytul: ";
-    std::getline(cin, tytul);
-    cout << "Podaj autora: ";
-    std::getline(cin, autor);
-    cout << "Podaj wydawnictwo: ";
-    std::getline(cin, wydawnictwo);
-    cout << "Podaj rok wydania: ";
-    cin >> rokWydania;
-    cin.ignore();
-    cout << "Podaj dzial: ";
-    std::getline(cin, lokalizacja.dzial);
-    cout << "Podaj numer regalu: ";
-    cin >> lokalizacja.numerRegalu;
-    cin.ignore();
+    // std::string tytul;
+    // std::string autor;
+    // std::string wydawnictwo;
+    // unsigned int rokWydania;
+    // Lokalizacja lokalizacja;
+    // cout << "Podaj tytul: ";
+    // std::getline(cin, tytul);
+    // cout << "Podaj autora: ";
+    // std::getline(cin, autor);
+    // cout << "Podaj wydawnictwo: ";
+    // std::getline(cin, wydawnictwo);
+    // cout << "Podaj rok wydania: ";
+    // cin >> rokWydania;
+    // cin.ignore();
+    // cout << "Podaj dzial: ";
+    // std::getline(cin, lokalizacja.dzial);
+    // cout << "Podaj numer regalu: ";
+    // cin >> lokalizacja.numerRegalu;
+    // cin.ignore();
+    Ksiazka* ksiazka = new Ksiazka;
+    cout << "Podaj dane ksiazki w tym formacie: 'Tytul, Autor, Wydawnictwo, Rok wydania, Dzial, Numer regalu': ";
+    cin >> *ksiazka;
 
     Ksiazka** temp = new Ksiazka*[liczba_ksiazek + 1];
     for (size_t i = 0; i < liczba_ksiazek; i++) {
         temp[i] = ksiazki[i];
     }
-    temp[liczba_ksiazek] = new Ksiazka{tytul, autor, wydawnictwo, rokWydania, lokalizacja};
+    // temp[liczba_ksiazek] = new Ksiazka{tytul, autor, wydawnictwo, rokWydania, lokalizacja};
+    temp[liczba_ksiazek] = ksiazka;
     delete[] ksiazki;
     ksiazki = temp;
     liczba_ksiazek++;
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Dodano nowa ksiazke");
 }
 
 // Funkcja wyświetlająca listę książek.
@@ -374,15 +436,18 @@ void wyswietl(Ksiazka**& ksiazki, size_t& liczba_ksiazek) {
     cout << "=========================================\n";
 
     for (size_t i = 0; i < liczba_ksiazek; i++) {
-        cout << i + 1 << ". " << ksiazki[i]->tytul << " - " << ksiazki[i]->autor << endl;
-        cout << "   Wydawnictwo: " << ksiazki[i]->wydawnictwo << endl
-             << "   Rok wydania: " << ksiazki[i]->rokWydania << endl
-             << "   Lokalizacja: " << ksiazki[i]->lokalizacja.dzial << " " << ksiazki[i]->lokalizacja.numerRegalu
-             << endl
-             << "   Dostepnosc: " << (ksiazki[i]->dostepna ? "Dostepna" : "Niedostepna") << endl;
+        cout << i + 1 << ". " << *ksiazki[i];
+
+        // cout << i + 1 << ". " << ksiazki[i]->tytul << " - " << ksiazki[i]->autor << endl;
+        // cout << "   Wydawnictwo: " << ksiazki[i]->wydawnictwo << endl
+        //      << "   Rok wydania: " << ksiazki[i]->rokWydania << endl
+        //      << "   Lokalizacja: " << ksiazki[i]->lokalizacja.dzial << " " << ksiazki[i]->lokalizacja.numerRegalu
+        //      << endl
+        //      << "   Dostepnosc: " << (ksiazki[i]->dostepna ? "Dostepna" : "Niedostepna") << endl;
         cout << "-----------------------------------------\n";
     }
     cout << "=========================================\n";
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono liste ksiazek");
 }
 
 // Funkcja umożliwiająca edycję danych książki.
@@ -433,7 +498,9 @@ void edytuj(Ksiazka**& ksiazki, size_t index) {
                 break;
         }
         cout << "-----------------------------------------\n";
+        RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Edytowano dane ksiazki");
     } while (wybor != 6);
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Powrot do menu zarzadzania ksiazkami");
 }
 
 // Funkcja usuwająca książkę z listy.
@@ -448,6 +515,7 @@ void usun(Ksiazka**& ksiazki, size_t& liczba_ksiazek, size_t index) {
     delete[] ksiazki;
     ksiazki = temp;
     liczba_ksiazek--;
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Usunieto ksiazke");
 }
 
 // Funkcja generujaca dane dla czytelnika
@@ -471,10 +539,8 @@ void gen_data(Czytelnik& czytelnik) {
     std::string_view email = Emaile[index_emaila];
 
     czytelnik.setImie(std::string(imie) + " " + std::string(nazwisko));
-    Adres adres;
-    adres.setNumerDomu(DistNumerDomu(dfe));
-    adres.setUlica(std::string(ulica));
-    czytelnik.setAdres(adres);
+    czytelnik.setNumerDomu(DistNumerDomu(dfe));
+    czytelnik.setUlica(std::string(ulica));
     std::string imieMale = std::string(imie);
     imieMale[0] = std::tolower(imieMale[0]);
     std::string nazwiskoMale = std::string(nazwisko);
@@ -491,6 +557,7 @@ void stworz(std::vector<Czytelnik>& czytelnicy, size_t& last_id, size_t rozmiar)
         nowy.setNumerID(++last_id);
         czytelnicy.push_back(nowy);
     }
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Stworzono baze czytelnikow");
 }
 
 size_t ostatni_regal = 1;
@@ -536,6 +603,7 @@ void stworz(Ksiazka**& ksiazki, size_t rozmiar, size_t& liczba_ksiazek) {
         stworz(ksiazki[i]);
         liczba_ksiazek++;
     }
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Stworzono baze ksiazek");
 }
 
 // funckcja do usuwania tablicy ksiazek i czyszczenia pamieci
@@ -547,6 +615,7 @@ void usun(Ksiazka**& ksiazki, size_t& liczba_ksiazek) {
     ksiazki = nullptr;
     liczba_ksiazek = 0;
     ostatni_regal = 1;
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Usunieto baze ksiazek");
 }
 
 size_t generujLiczbeLosowa(size_t begin, size_t end) {
@@ -554,4 +623,67 @@ size_t generujLiczbeLosowa(size_t begin, size_t end) {
     static std::mt19937 engine(seed());
     static std::uniform_int_distribution<size_t> uniformDist(begin, end);
     return uniformDist(engine);
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wygenerowanie liczby losowej");
+}
+
+void szukaj(std::vector<Czytelnik>& czytelnicy) {
+    system("clear");
+    cout << "\n=========================================\n";
+    cout << "          Szukanie czytelnika          \n";
+    cout << "=========================================\n";
+    cout << "1. Szukanie po id" << endl
+         << "2. Szukanie po imieniu i nazwisku" << endl
+         << "Wybierz opcje wyszukiwania: ";
+    size_t wybor;
+    cin >> wybor;
+    cin.ignore();
+    size_t index;
+    switch (wybor) {
+        case 1:
+            cout << "Wprowadz id: ";
+            size_t id;
+            cin >> id;
+            cin.ignore();
+            index = szukaj_po_id(czytelnicy, id);
+            break;
+        case 2:
+            cout << "Podaj imie i nazwiska zwracaja uwage na wielkie litery: ";
+            std::string imie;
+            std::getline(cin, imie);
+            index = szukaj_po_imie(czytelnicy, imie);
+            //     break;
+            // default:
+            //     cout << "Zly wybor";
+            //     break;
+    }
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyszukano czytelnika");
+    wyswietl(czytelnicy, index);
+}
+
+// funkcja do szukania indexu czytelnika za pomoca id
+size_t szukaj_po_id(std::vector<Czytelnik>& czytelnicy, size_t id) {
+    size_t left = 0;
+    size_t right = czytelnicy.size() - 1;
+    while (left <= right) {
+        size_t mid = left + (right - left) / 2;
+        if (czytelnicy[mid].getNumerID() == id) {
+            return mid;
+        }
+        if (czytelnicy[mid].getNumerID() < id) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return -1;
+}
+
+// funkcja do szukania czytelnika po imieniu i nazwisku
+size_t szukaj_po_imie(std::vector<Czytelnik>& czytelnicy, std::string imie) {
+    for (size_t i = 0; i < czytelnicy.size(); i++) {
+        if (czytelnicy[i].getImie() == imie) {
+            return i;
+        }
+    }
+    return -1;
 }

@@ -9,6 +9,10 @@
                 "-g",
                 "-std=c++17",
                 "${workspaceFolder}/Main/main.cpp",
+                "${workspaceFolder}/Main/Biblioteka.cpp",
+                "${workspaceFolder}/Main/Czytelnik.cpp",
+                "${workspaceFolder}/Main/Ksiazka.cpp",
+                "${workspaceFolder}/Main/RejestratorZdarzen.cpp",
                 "${workspaceFolder}/Main/funkcje.cpp",
                 "-o",
                 "${workspaceFolder}/output", // Output file located in the workspace directory

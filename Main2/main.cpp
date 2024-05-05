@@ -5,6 +5,7 @@
 #include "funkcje.h"
 
 int main(void) {
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Program uruchomiony");
     using std::cout, std::cin, std::endl;
 
     // Tworzenie wektora czytelnikow
@@ -22,7 +23,7 @@ int main(void) {
         switch (wybor) {
             case 1:
                 // zardzadanie czytelnikami
-                menuCzytelnikow(czytelnicy, last_id);
+                menuCzytelnikow(czytelnicy, last_id, ksiazki, liczba_ksiazek);
                 break;
             case 2:
                 // zarzadanie ksiazkami
@@ -37,4 +38,16 @@ int main(void) {
                 break;
         }
     } while (wybor != 3);
+
+    RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Program zakonczony");
+
+    cout << "\n\n========================================\n"
+         << "              Rejestr Zdarzen\n"
+         << "========================================\n";
+    const auto& zdarzenia = RejestratorZdarzen::get_rejestratorZdarzen()->getZdarzenia();
+    for (const auto& zdarzenie : zdarzenia) {
+        cout << zdarzenie << endl;
+    }
+
+    RejestratorZdarzen::usun_rejestratorZdarzen();
 }
