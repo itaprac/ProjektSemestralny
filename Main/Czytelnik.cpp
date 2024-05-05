@@ -84,7 +84,9 @@ Czytelnik::Czytelnik(Czytelnik&& other) noexcept
       adres(std::move(other.adres)),
       wypozyczone_ksiazki(std::move(other.wypozyczone_ksiazki)),
       liczba_wypozyczonych_ksiazek(std::move(other.liczba_wypozyczonych_ksiazek)),
-      licznik_wyswietlen(std::move(other.licznik_wyswietlen)){};
+      licznik_wyswietlen(std::move(other.licznik_wyswietlen)) {
+    other.wypozyczone_ksiazki = nullptr;
+};
 
 // operator przypisania przenoszącego
 Czytelnik& Czytelnik::operator=(Czytelnik&& other) noexcept {
@@ -143,7 +145,7 @@ std::istream& operator>>(std::istream& input, Czytelnik& czytelnik) {
 Czytelnik::~Czytelnik() {
     if (wypozyczone_ksiazki != nullptr) {
         delete[] wypozyczone_ksiazki;
-        wypozyczone_ksiazki = nullptr;  // good practice to avoid dangling pointers
+        wypozyczone_ksiazki = nullptr;
     }
 }
 
