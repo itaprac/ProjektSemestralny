@@ -116,8 +116,12 @@ std::ostream& operator<<(std::ostream& output, const Czytelnik& czytelnik) {
     output << "Adres: " << czytelnik.adres << std::endl;
     output << "Liczba wypozyczonych ksiazek: " << czytelnik.liczba_wypozyczonych_ksiazek << std::endl;
     output << "Wypozyczone ksiazki: " << std::endl;
-    for (size_t i = 0; i < czytelnik.liczba_wypozyczonych_ksiazek; i++) {
-        output << czytelnik[i] << std::endl;
+    if (czytelnik.liczba_wypozyczonych_ksiazek == 0) {
+        output << "Brak wypozyczonych ksiazek" << std::endl;
+    } else {
+        for (size_t i = 0; i < czytelnik.liczba_wypozyczonych_ksiazek; i++) {
+            output << czytelnik[i] << std::endl;
+        }
     }
     output << "Licznik wyswietlen: " << czytelnik.licznik_wyswietlen << std::endl;
 

@@ -186,7 +186,7 @@ void Biblioteka::utworzCzytelnika() {
 };
 
 void Biblioteka::utworzKsiazke() {
-    system("claer");
+    system("clear");
     cout << "\n=========================================\n";
     cout << "          Dodawanie Ksiazki          \n";
     cout << "=========================================\n";
@@ -295,6 +295,8 @@ Czytelnik& Biblioteka::szukajCzytelnika() {
         return *czytelnik;
     }
     czytelnicy[index].wyswietl();
+    cout << "Wcisnij dowolny klawisz aby kontynuowac" << endl;
+    cin.get();
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyszukano czytelnika");
     return czytelnicy[index];
 };
@@ -334,7 +336,7 @@ size_t Biblioteka::szukajKsiazkiPoTytule(std::string tytul) {
     return -1;
 };
 
-size_t Biblioteka::szukajKsiazkiPoISBN(unsigned int ISBN) {
+size_t Biblioteka::szukajKsiazkiPoISBN(long ISBN) {
     for (size_t i = 0; i < liczba_ksiazek; i++) {
         if (ksiazki[i]->get_ISBN() == ISBN) {
             return i;
@@ -374,6 +376,8 @@ Ksiazka& Biblioteka::szukajKsiazki() {
         return *ksiazka;
     }
     ksiazki[index]->wyswietl();
+    cout << "Wcisnij dowolny klawisz aby kontynuowac" << endl;
+    cin.get();
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyszukano ksiazke");
     return *ksiazki[index];
 };
@@ -387,6 +391,8 @@ void Biblioteka::wypozycz() {
     Czytelnik& czytelnik = szukajCzytelnika();
     if (ksiazka.tytul == "tytul" || czytelnik.imie == "imie") {
         cout << "Nie znaleziono ksiazki lub czytelnika" << endl;
+        cout << "wciśnij dowolny klawisz aby kontynuowac" << endl;
+        cin.get();
         return;
     }
     if (ksiazka.get_wypozyczona() == false) {
@@ -394,6 +400,8 @@ void Biblioteka::wypozycz() {
         czytelnik.dodaj(ksiazka);
     } else {
         cout << "Ksiazka jest juz wypozyczona" << endl;
+        cout << "Wciśnij dowolny klawisz aby kontynuowac" << endl;
+        cin.get();
     }
 };
 

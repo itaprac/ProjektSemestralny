@@ -60,7 +60,7 @@ class Biblioteka {
     size_t szukajCzytelnikaPoID(size_t id);
     size_t szukajCzytelnikaPoImieniu(std::string imie);
     size_t szukajKsiazkiPoTytule(std::string tytul);
-    size_t szukajKsiazkiPoISBN(unsigned int ISBN);
+    size_t szukajKsiazkiPoISBN(long ISBN);
     void wypozycz();
     void zwroc(Czytelnik& czytelnik, Ksiazka* ksiazka);
 

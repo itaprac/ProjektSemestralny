@@ -92,7 +92,7 @@ std::ostream& operator<<(std::ostream& output, const Ksiazka& ksiazka) {
     output << "Gatunek: " << ksiazka.gatunek << std::endl;
     output << "Rok wydania: " << ksiazka.rok_wydania << std::endl;
     output << "ISBN: " << ksiazka.ISBN << std::endl;
-    output << "Wypozyczona: " << ksiazka.wypozyczona << std::endl;
+    output << "Wypozyczona: " << (ksiazka.wypozyczona ? "Tak" : "Nie") << std::endl;
 
     return output;
 };

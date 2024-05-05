@@ -39,6 +39,7 @@ void menuGlowne() {
                 break;
             case 3:
                 Biblioteka::get_biblioteka()->wypozycz();
+                break;
             case 4:
                 cout << "Wychodzenie z programu...\n";
                 // usun biblioteke
