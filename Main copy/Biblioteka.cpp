@@ -20,20 +20,17 @@ Biblioteka* Biblioteka::get_biblioteka() {
 };
 
 Biblioteka::Biblioteka() {
-    // ksiazki = nullptr;
+    ksiazki = nullptr;
     liczba_ksiazek = 0;
     last_id = 0;
     czytelnicy = {};
-    // usuniete_elementy = nullptr;
-    for (auto& element : usuniete_elementy) {
-        element = nullptr;
-    }
+    usuniete_elementy = nullptr;
     liczba_usunietych = 0;
 };
 
 // lista inicjalizacyjna
-Biblioteka::Biblioteka(std::vector<Ksiazka> ksiazki, size_t liczba_ksiazek, std::vector<Czytelnik> czytelnicy,
-                       size_t last_id, std::vector<Obiekt*> usuniete_elementy, size_t liczba_usunietych)
+Biblioteka::Biblioteka(Ksiazka** ksiazki, size_t liczba_ksiazek, std::vector<Czytelnik> czytelnicy, size_t last_id,
+                       Obiekt** usuniete_elementy, size_t liczba_usunietych)
     : ksiazki(ksiazki),
       liczba_ksiazek(liczba_ksiazek),
       czytelnicy(czytelnicy),
@@ -43,7 +40,10 @@ Biblioteka::Biblioteka(std::vector<Ksiazka> ksiazki, size_t liczba_ksiazek, std:
 
 // konstruktor kopiujący
 Biblioteka::Biblioteka(const Biblioteka& right) {
-    ksiazki = right.ksiazki;
+    ksiazki = new Ksiazka*[right.liczba_ksiazek];
+    for (size_t i = 0; i < right.liczba_ksiazek; i++) {
+        ksiazki[i] = new Ksiazka(*right.ksiazki[i]);
+    }
     usuniete_elementy = right.usuniete_elementy;
     liczba_ksiazek = right.liczba_ksiazek;
     czytelnicy = right.czytelnicy;
@@ -56,11 +56,28 @@ Biblioteka& Biblioteka::operator=(const Biblioteka& right) {
     if (this == &right) {
         return *this;
     }
-    ksiazki = right.ksiazki;
+
+    for (size_t i = 0; i < liczba_ksiazek; i++) {
+        delete ksiazki[i];
+    }
+    delete[] ksiazki;
+
+    ksiazki = new Ksiazka*[right.liczba_ksiazek];
+    for (size_t i = 0; i < right.liczba_ksiazek; i++) {
+        ksiazki[i] = new Ksiazka(*right.ksiazki[i]);
+    }
     liczba_ksiazek = right.liczba_ksiazek;
     czytelnicy = right.czytelnicy;
     last_id = right.last_id;
-    usuniete_elementy = right.usuniete_elementy;
+
+    for (size_t i = 0; i < liczba_usunietych; i++) {
+        delete usuniete_elementy[i];
+    }
+    delete[] usuniete_elementy;
+    usuniete_elementy = new Obiekt*[right.liczba_usunietych];
+    for (size_t i = 0; i < right.liczba_usunietych; i++) {
+        usuniete_elementy[i] = right.usuniete_elementy[i];
+    }
     liczba_usunietych = right.liczba_usunietych;
     return *this;
 };
@@ -80,6 +97,16 @@ Biblioteka& Biblioteka::operator=(Biblioteka&& other) noexcept {
     if (this == &other) {
         return *this;
     }
+
+    for (size_t i = 0; i < liczba_ksiazek; i++) {
+        delete ksiazki[i];
+    }
+    delete[] ksiazki;
+
+    for (size_t i = 0; i < liczba_usunietych; i++) {
+        delete usuniete_elementy[i];
+    }
+    delete[] usuniete_elementy;
     ksiazki = std::move(other.ksiazki);
     liczba_ksiazek = std::move(other.liczba_ksiazek);
     czytelnicy = std::move(other.czytelnicy);
@@ -92,16 +119,29 @@ Biblioteka& Biblioteka::operator=(Biblioteka&& other) noexcept {
 
 // destruktor
 Biblioteka::~Biblioteka() {
-    for (auto ptr : usuniete_elementy) {
-        delete ptr;
+    for (size_t i = 0; i < liczba_ksiazek; i++) {
+        delete ksiazki[i];
     }
-    usuniete_elementy.clear();
+    delete[] ksiazki;
+    ksiazki = nullptr;
+
+    for (size_t i = 0; i < liczba_usunietych; i++) {
+        delete usuniete_elementy[i];
+    }
+    delete[] usuniete_elementy;
+    usuniete_elementy = nullptr;
 };
 
 // Metody
 
-void Biblioteka::dodaj(Ksiazka ksiazka) {
-    ksiazki.push_back(ksiazka);
+void Biblioteka::dodaj(Ksiazka* ksiazka) {
+    Ksiazka** nowe_ksiazki = new Ksiazka*[liczba_ksiazek + 1];
+    for (size_t i = 0; i < liczba_ksiazek; i++) {
+        nowe_ksiazki[i] = ksiazki[i];
+    }
+    nowe_ksiazki[liczba_ksiazek] = ksiazka;
+    delete[] ksiazki;
+    ksiazki = nowe_ksiazki;
     liczba_ksiazek++;
 };
 
@@ -128,7 +168,7 @@ void Biblioteka::wyswietlKsiazki() {
     cout << "=========================================\n";
     for (size_t i = 0; i < liczba_ksiazek; i++) {
         cout << i + 1 << ". ";
-        ksiazki[i].wyswietl();
+        ksiazki[i]->wyswietl();
     }
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono liste ksiazek");
 };
@@ -189,8 +229,8 @@ void Biblioteka::utworzKsiazke() {
     cout << "          Dodawanie Ksiazki          \n";
     cout << "=========================================\n";
 
-    Ksiazka nowaKsiazka;
-    cin >> nowaKsiazka;
+    Ksiazka* nowaKsiazka = new Ksiazka();
+    cin >> *nowaKsiazka;
     dodaj(nowaKsiazka);
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Dodano nowa ksiazke");
 }
@@ -223,57 +263,50 @@ void Biblioteka::edytujKsiazke(size_t index) {
               << "6. Edytowanie gatuunku\n"
               << "7. Powrot\n"
               << "=========================================\n";
-    ksiazki[index].edytuj();
+    ksiazki[index]->edytuj();
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Edytowano ksiazke");
 }
 
-// void Biblioteka::powiekszTabliceElementow() {
-//     Obiekt** nowe_elementy = new Obiekt*[liczba_usunietych + 1];
-//     for (size_t i = 0; i < liczba_usunietych; i++) {
-//         nowe_elementy[i] = usuniete_elementy[i];
-//     }
-//     delete[] usuniete_elementy;
-//     usuniete_elementy = nowe_elementy;
-//     usuniete_elementy[liczba_usunietych] = nullptr;
-// };
+void Biblioteka::powiekszTabliceElementow() {
+    Obiekt** nowe_elementy = new Obiekt*[liczba_usunietych + 1];
+    for (size_t i = 0; i < liczba_usunietych; i++) {
+        nowe_elementy[i] = usuniete_elementy[i];
+    }
+    delete[] usuniete_elementy;
+    usuniete_elementy = nowe_elementy;
+    usuniete_elementy[liczba_usunietych] = nullptr;
+};
 
 void Biblioteka::usunCzytelnika(size_t index) {
-    // powiekszTabliceElementow();
-    for (auto ksiazka : czytelnicy[index].get_wypozyczone_ksiazki()) {
-        zwrocKsiazke(ksiazka.get_ISBN());
-    }
-    Czytelnik* usuniety = new Czytelnik(std::move(czytelnicy[index]));
-    usuniete_elementy.push_back(usuniety);
+    powiekszTabliceElementow();
+    usuniete_elementy[liczba_usunietych] = new Czytelnik(czytelnicy[index]);
     liczba_usunietych++;
     czytelnicy.erase(czytelnicy.begin() + index);
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Usunieto czytelnika");
 }
 
 void Biblioteka::usunKsiazke(size_t index) {
-    // powiekszTabliceElementow();
-    zwrocKsiazke(ksiazki[index].get_ISBN());
-    Ksiazka* usunieta = new Ksiazka(std::move(ksiazki[index]));
-    usuniete_elementy.push_back(usunieta);
+    powiekszTabliceElementow();
+    usuniete_elementy[liczba_usunietych] = new Ksiazka(*ksiazki[index]);
     liczba_usunietych++;
-    liczba_ksiazek--;
-    ksiazki.erase(ksiazki.begin() + index);
+    usun(ksiazki[index]);
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Usunieto ksiazke");
 }
 
-// void Biblioteka::usun(Ksiazka* ksiazka) {
-//     Ksiazka** nowe_ksiazki = new Ksiazka*[liczba_ksiazek - 1];
-//     size_t j = 0;
-//     for (size_t i = 0; i < liczba_ksiazek; i++) {
-//         if (ksiazki[i] != ksiazka) {
-//             nowe_ksiazki[j] = ksiazki[i];
-//             j++;
-//         }
-//     }
-//     delete ksiazka;
-//     delete[] ksiazki;
-//     ksiazki = nowe_ksiazki;
-//     liczba_ksiazek--;
-// };
+void Biblioteka::usun(Ksiazka* ksiazka) {
+    Ksiazka** nowe_ksiazki = new Ksiazka*[liczba_ksiazek - 1];
+    size_t j = 0;
+    for (size_t i = 0; i < liczba_ksiazek; i++) {
+        if (ksiazki[i] != ksiazka) {
+            nowe_ksiazki[j] = ksiazki[i];
+            j++;
+        }
+    }
+    delete ksiazka;
+    delete[] ksiazki;
+    ksiazki = nowe_ksiazki;
+    liczba_ksiazek--;
+};
 
 Czytelnik& Biblioteka::szukajCzytelnika() {
     system("clear");
@@ -340,7 +373,7 @@ size_t Biblioteka::szukajCzytelnikaPoImieniu(std::string imie) {
 
 size_t Biblioteka::szukajKsiazkiPoTytule(std::string tytul) {
     for (size_t i = 0; i < liczba_ksiazek; i++) {
-        if (ksiazki[i].get_tytul() == tytul) {
+        if (ksiazki[i]->get_tytul() == tytul) {
             return i;
         }
     }
@@ -349,14 +382,14 @@ size_t Biblioteka::szukajKsiazkiPoTytule(std::string tytul) {
 
 size_t Biblioteka::szukajKsiazkiPoISBN(long ISBN) {
     for (size_t i = 0; i < liczba_ksiazek; i++) {
-        if (ksiazki[i].get_ISBN() == ISBN) {
+        if (ksiazki[i]->get_ISBN() == ISBN) {
             return i;
         }
     }
     return -1;
 };
 
-Ksiazka& Biblioteka::szukajKsiazki() {
+Ksiazka* Biblioteka::szukajKsiazki() {
     system("clear");
     cout << "\n=========================================\n";
     cout << "          Szukanie ksiazki          \n";
@@ -383,10 +416,10 @@ Ksiazka& Biblioteka::szukajKsiazki() {
     }
     if (index == -1) {
         cout << "Nie znaleziono ksiazki" << endl;
-        Ksiazka* ksiazka = new Ksiazka;
-        return *ksiazka;
+        Ksiazka* ksiazka = new Ksiazka();
+        return ksiazka;
     }
-    ksiazki[index].wyswietl();
+    ksiazki[index]->wyswietl();
     cout << "Wcisnij dowolny klawisz aby kontynuowac" << endl;
     cin.get();
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyszukano ksiazke");
@@ -398,16 +431,16 @@ void Biblioteka::wypozycz() {
     cout << "\n=========================================\n"
          << "           Wypozyczanie Ksiazki          \n"
          << "=========================================\n";
-    Ksiazka& ksiazka = szukajKsiazki();
+    Ksiazka* ksiazka = szukajKsiazki();
     Czytelnik& czytelnik = szukajCzytelnika();
-    if (ksiazka.tytul == "tytul" || czytelnik.imie == "imie") {
+    if (ksiazka->tytul == "tytul" || czytelnik.imie == "imie") {
         cout << "Nie znaleziono ksiazki lub czytelnika" << endl;
         cout << "wciśnij dowolny klawisz aby kontynuowac" << endl;
         cin.get();
         return;
     }
-    if (ksiazka.get_wypozyczona() == false) {
-        ksiazka.set_wypozyczona(true);
+    if (ksiazka->get_wypozyczona() == false) {
+        ksiazka->set_wypozyczona(true);
         czytelnik.dodaj(ksiazka);
     } else {
         cout << "Ksiazka jest juz wypozyczona" << endl;
@@ -421,55 +454,26 @@ void Biblioteka::zwroc() {
     cout << "\n=========================================\n"
          << "           Zwracanie Ksiazki          \n"
          << "=========================================\n";
-    int i = 0;
-    int j = 0;
-    std::vector<int> wypozyczone;
-    for (const auto& ksiazka : ksiazki) {
-        if (ksiazka.get_wypozyczona() == true) {
+    for (size_t i = 0; i < liczba_ksiazek; i++) {
+        if (ksiazki[i]->get_wypozyczona() == true) {
             cout << ++i << ". ";
-            ksiazka.wyswietl();
-            wypozyczone.push_back(j);
+            ksiazki[i]->wyswietl();
         }
-        j++;
     }
-    if (i == 0) {
-        return;
-    }
-    cin.ignore();
     int wybor;
     cout << "Wybierz ksiazke do zwrotu: ";
     cin >> wybor;
     cin.ignore();
-    if (wybor > 0 && wybor <= wypozyczone.size()) {
-        int index = wypozyczone[wybor - 1];
-        zwrocKsiazke(ksiazki[index].get_ISBN());
+    if (ksiazki[wybor - 1]->get_wypozyczona() == true) {
+        ksiazki[wybor - 1]->set_wypozyczona(false);
         cout << "Ksiazka zostala zwrocona" << endl;
-        ksiazki[index].ocen();
+        ksiazki[wybor - 1]->ocen();
         cout << "Wciśnij dowolny klawisz aby kontynuowac" << endl;
         cin.get();
-    }
-    // if (ksiazki[j].get_wypozyczona() == true) {
-    //     zwrocKsiazke(ksiazki[j].get_ISBN());
-    //     cout << "Ksiazka zostala zwrocona" << endl;
-    //     ksiazki[j].ocen();
-    //     cout << "Wciśnij dowolny klawisz aby kontynuowac" << endl;
-    //     cin.get();
-    else {
+    } else {
         cout << "Ksiazka nie jest wypozyczona" << endl;
         cout << "Wciśnij dowolny klawisz aby kontynuowac" << endl;
         cin.get();
-    }
-}
-
-void Biblioteka::zwrocKsiazke(long ISBN) {
-    for (auto& ksiazka : ksiazki) {
-        if (ksiazka.get_ISBN() == ISBN && ksiazka.wypozyczona) {
-            ksiazka.set_wypozyczona(false);
-            for (auto& czytelnik : czytelnicy) {
-                czytelnik.usun(ISBN);
-            }
-            return;
-        }
     }
 }
 
@@ -485,8 +489,8 @@ void Biblioteka::stworzCzytelnikow(size_t ilosc) {
 
 void Biblioteka::stworzKsiazki(size_t ilosc) {
     for (size_t i = 0; i < ilosc; i++) {
-        Ksiazka nowaKsiazka;
-        nowaKsiazka.gen_data();
+        Ksiazka* nowaKsiazka = new Ksiazka();
+        nowaKsiazka->gen_data();
         dodaj(nowaKsiazka);
     }
 };
@@ -502,13 +506,13 @@ void Biblioteka::wyswietlUsuniete() {
 };
 
 // Gettery
-std::vector<Ksiazka> Biblioteka::get_ksiazki() const { return ksiazki; };
+Ksiazka** Biblioteka::get_ksiazki() const { return ksiazki; };
 size_t Biblioteka::get_liczba_ksiazek() const { return liczba_ksiazek; };
 std::vector<Czytelnik> Biblioteka::get_czytelnicy() const { return czytelnicy; };
 size_t Biblioteka::get_last_id() const { return last_id; };
 
 // Settery
-void Biblioteka::set_ksiazki(std::vector<Ksiazka> ksiazki) { this->ksiazki = ksiazki; };
+void Biblioteka::set_ksiazki(Ksiazka** ksiazki) { this->ksiazki = ksiazki; };
 void Biblioteka::set_liczba_ksiazek(size_t liczba_ksiazek) { this->liczba_ksiazek = liczba_ksiazek; };
 void Biblioteka::set_czytelnicy(std::vector<Czytelnik> czytelnicy) { this->czytelnicy = czytelnicy; };
 void Biblioteka::set_last_id(size_t last_id) { this->last_id = last_id; };

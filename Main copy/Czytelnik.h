@@ -92,7 +92,7 @@ class Czytelnik final : public Ksiazka {
     std::string numer_telefonu;
     unsigned int numer_ID;
     Adres adres;
-    std::vector<Ksiazka> wypozyczone_ksiazki;
+    Ksiazka** wypozyczone_ksiazki;
     size_t liczba_wypozyczonych_ksiazek;
     mutable size_t licznik_wyswietlen;
 
@@ -135,9 +135,8 @@ class Czytelnik final : public Ksiazka {
     // Metody
     void wyswietl() const override;
     void edytuj() override;
-    void dodaj(Ksiazka&);
+    void dodaj(Ksiazka*);
     void gen_data() override;
-    void usun(long);
 
     // Gettery
     std::string get_imie() const;
@@ -147,7 +146,7 @@ class Czytelnik final : public Ksiazka {
     Adres get_adres() const;
     std::string get_ulica() const;
     unsigned int get_numer_domu() const;
-    std::vector<Ksiazka> get_wypozyczone_ksiazki() const;
+    Ksiazka** get_wypozyczone_ksiazki() const;
     size_t get_liczba_wypozyczonych_ksiazek() const;
 
     // Settery
@@ -158,6 +157,6 @@ class Czytelnik final : public Ksiazka {
     void set_adres(Adres);
     void set_ulica(std::string);
     void set_numer_domu(unsigned int);
-    void set_wypozyczone_ksiazki(std::vector<Ksiazka>);
+    void set_wypozyczone_ksiazki(Ksiazka**);
     void set_liczba_wypozyczonych_ksiazek(size_t);
 };
