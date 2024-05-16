@@ -5,7 +5,12 @@
 #include "Ksiazka.h"
 #include "funkcje.h"
 
-class Czytelnik final : public Ksiazka {
+namespace Readers {
+
+using namespace Books;
+using namespace Objects;
+
+class Czytelnik final : public Obiekt {
     class Adres {
         std::string ulica;
         unsigned int numer_domu;
@@ -161,3 +166,4 @@ class Czytelnik final : public Ksiazka {
     void set_wypozyczone_ksiazki(std::vector<Ksiazka>);
     void set_liczba_wypozyczonych_ksiazek(size_t);
 };
+}  // namespace Readers

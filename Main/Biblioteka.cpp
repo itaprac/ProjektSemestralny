@@ -9,8 +9,12 @@
 #include "RejestratorZdarzen.h"
 #include "funkcje.h"
 
-Biblioteka* Biblioteka::biblioteka = nullptr;
 using std::cout, std::cin, std::endl;
+using namespace Books;
+using namespace Readers;
+using namespace Objects;
+
+Biblioteka* Biblioteka::biblioteka = nullptr;
 
 Biblioteka* Biblioteka::get_biblioteka() {
     if (biblioteka == nullptr) {
@@ -159,17 +163,17 @@ void Biblioteka::utworzCzytelnika() {
     } while (poprawneDane == false);
 
     Czytelnik nowyCzytelnik;
-    nowyCzytelnik.numer_ID = ++last_id;  // Automatyczne przypisanie numeru ID.
+    nowyCzytelnik.set_numer_ID(++last_id);  // Automatyczne przypisanie numeru ID.
     size_t pozycja = 0;
     size_t poprzednia_pozycja = 0;
     pozycja = daneWejsciowe.find(", ", poprzednia_pozycja);
-    nowyCzytelnik.imie = (daneWejsciowe.substr(poprzednia_pozycja, pozycja - poprzednia_pozycja));
+    nowyCzytelnik.set_imie(daneWejsciowe.substr(poprzednia_pozycja, pozycja - poprzednia_pozycja));
     poprzednia_pozycja = pozycja + 2;
     pozycja = daneWejsciowe.find(", ", poprzednia_pozycja);
-    nowyCzytelnik.email = (daneWejsciowe.substr(poprzednia_pozycja, pozycja - poprzednia_pozycja));
+    nowyCzytelnik.set_email(daneWejsciowe.substr(poprzednia_pozycja, pozycja - poprzednia_pozycja));
     poprzednia_pozycja = pozycja + 2;
     pozycja = daneWejsciowe.find(", ", poprzednia_pozycja);
-    nowyCzytelnik.numer_telefonu = (daneWejsciowe.substr(poprzednia_pozycja, pozycja - poprzednia_pozycja));
+    nowyCzytelnik.set_numer_telefonu(daneWejsciowe.substr(poprzednia_pozycja, pozycja - poprzednia_pozycja));
     poprzednia_pozycja = pozycja + 2;
     pozycja = daneWejsciowe.find(", ", poprzednia_pozycja);
     nowyCzytelnik.set_ulica(daneWejsciowe.substr(poprzednia_pozycja, pozycja - poprzednia_pozycja));
@@ -400,7 +404,7 @@ void Biblioteka::wypozycz() {
          << "=========================================\n";
     Ksiazka& ksiazka = szukajKsiazki();
     Czytelnik& czytelnik = szukajCzytelnika();
-    if (ksiazka.tytul == "tytul" || czytelnik.imie == "imie") {
+    if (ksiazka.get_tytul() == "tytul" || czytelnik.get_imie() == "imie") {
         cout << "Nie znaleziono ksiazki lub czytelnika" << endl;
         cout << "wciśnij dowolny klawisz aby kontynuowac" << endl;
         cin.get();
@@ -463,7 +467,7 @@ void Biblioteka::zwroc() {
 
 void Biblioteka::zwrocKsiazke(long ISBN) {
     for (auto& ksiazka : ksiazki) {
-        if (ksiazka.get_ISBN() == ISBN && ksiazka.wypozyczona) {
+        if (ksiazka.get_ISBN() == ISBN && ksiazka.get_wypozyczona()) {
             ksiazka.set_wypozyczona(false);
             for (auto& czytelnik : czytelnicy) {
                 czytelnik.usun(ISBN);

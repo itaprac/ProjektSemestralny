@@ -9,9 +9,10 @@ class RejestratorZdarzen {
     size_t max_liczba_zdarzen;
 
    public:
-    RejestratorZdarzen(size_t maxZdarzen = 100);
+    RejestratorZdarzen();
+    RejestratorZdarzen(size_t);
     static RejestratorZdarzen* get_rejestratorZdarzen();
-    void dodajZdarzenie(const std::string& zdarzenie);
+    void dodajZdarzenie(const std::string&);
     void wyswietlZdarzenia() const;
     void usunRejestratorZdarzen();
 };

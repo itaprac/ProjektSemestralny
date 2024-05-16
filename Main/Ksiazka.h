@@ -4,6 +4,9 @@
 
 #include "Obiekt.h"
 // #include "dane.h"
+namespace Books {
+
+using namespace Objects;
 
 class Ksiazka : public Obiekt {
     std::string tytul;
@@ -47,7 +50,7 @@ class Ksiazka : public Obiekt {
     void wyswietl() const override;
     void edytuj() override;
     void gen_data() override;
-    void ocen() override final;
+    void ocen();
 
     // Gettery
     std::string get_tytul() const;
@@ -69,3 +72,4 @@ class Ksiazka : public Obiekt {
     void set_wypozyczona(bool);
     void set_oceny(std::vector<int>);
 };
+}  // namespace Books

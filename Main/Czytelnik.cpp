@@ -7,6 +7,10 @@
 #include "Ksiazka.h"
 #include "funkcje.h"
 
+namespace Readers {
+
+using namespace Books;
+using namespace Objects;
 // konstruktor domyślny
 Czytelnik::Czytelnik() {
     imie = "imie";
@@ -268,3 +272,4 @@ void Czytelnik::set_wypozyczone_ksiazki(std::vector<Ksiazka> wypozyczone_ksiazki
 void Czytelnik::set_liczba_wypozyczonych_ksiazek(size_t liczba_wypozyczonych_ksiazek) {
     this->liczba_wypozyczonych_ksiazek = liczba_wypozyczonych_ksiazek;
 };
+}  // namespace Readers

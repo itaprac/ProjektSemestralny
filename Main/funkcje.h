@@ -1,5 +1,3 @@
-#ifndef FUNKCJE_H
-#define FUNKCJE_H
 #pragma once
 
 #include <cctype>
@@ -8,10 +6,10 @@
 #include <string>
 #include <vector>
 
-size_t generujLiczbeLosowa(size_t begin, size_t end);
+size_t generujLiczbeLosowa(size_t, size_t);
 void menuCzytelnikow();
 void menuKsiazek();
-void stworz(size_t& last_id, size_t ilosc);
+void stworz(size_t&, size_t);
 
 void menuGlowne();
 
@@ -30,5 +28,3 @@ extern std::string_view Wydawnictwa[];
 extern std::string_view Dzialy[];
 extern std::string_view Tytuly1[];
 extern std::string_view Tytuly2[];
-
-#endif

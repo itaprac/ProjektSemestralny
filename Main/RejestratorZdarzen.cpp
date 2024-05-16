@@ -8,6 +8,8 @@ RejestratorZdarzen* RejestratorZdarzen::rejestratorZdarzen = nullptr;
 
 RejestratorZdarzen::RejestratorZdarzen(size_t maxZdarzen) : max_liczba_zdarzen(maxZdarzen) {}
 
+RejestratorZdarzen::RejestratorZdarzen() : max_liczba_zdarzen(20) {}
+
 RejestratorZdarzen* RejestratorZdarzen::get_rejestratorZdarzen() {
     if (rejestratorZdarzen == nullptr) {
         rejestratorZdarzen = new RejestratorZdarzen();

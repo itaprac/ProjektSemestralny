@@ -8,6 +8,11 @@
 #include "Czytelnik.h"
 #include "Ksiazka.h"
 #include "Obiekt.h"
+
+using namespace Books;
+using namespace Readers;
+using namespace Objects;
+
 class Biblioteka {
     static Biblioteka* biblioteka;
     // Ksiazka** ksiazki;
