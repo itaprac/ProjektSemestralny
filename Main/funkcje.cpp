@@ -97,20 +97,20 @@ void menuCzytelnikow() {
             case 3:
                 // Edytuj Czytelnika
                 Biblioteka::get_biblioteka()->wyswietlCzytelnikow();
-                cout << "Wybierz, którego czytelnika chcesz edytować: ";
-                size_t index;
-                cin >> index;
+                cout << "Podaj ID czytelnika do edycji: ";
+                size_t id;
+                cin >> id;
                 cin.ignore();
-                Biblioteka::get_biblioteka()->edytujCzytelnika(index - 1);
+                Biblioteka::get_biblioteka()->edytujCzytelnika(id);
                 break;
             case 4:
                 // Usuń Czytelnika
                 Biblioteka::get_biblioteka()->wyswietlCzytelnikow();
-                cout << "Wybierz, którego czytelnika chcesz usunąć: ";
-                size_t index2;
-                cin >> index2;
+                cout << "Podaj ID czytelnika do usuniecia: ";
+                size_t id2;
+                cin >> id2;
                 cin.ignore();
-                Biblioteka::get_biblioteka()->usunCzytelnika(index2 - 1);
+                Biblioteka::get_biblioteka()->usunCzytelnika(id2);
                 break;
             case 5:
                 cout << "Ile czytelnikow chcesz wygenerowac: ";
@@ -142,7 +142,8 @@ void menuKsiazek() {
              << "3. Edytuj ksiazke\n"
              << "4. Usun ksiazke\n"
              << "5. Stworz Baze Ksiazek\n"
-             << "6. Powrot\n"
+             << "6. Wyswietl ksiazki opublikowane po roku\n"
+             << "7. Powrot\n"
              << "=========================================\n"
              << "Wybierz opcje: ";
         RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Wyswietlono menu zarzadzania ksiazkami");
@@ -187,13 +188,20 @@ void menuKsiazek() {
                 Biblioteka::get_biblioteka()->stworzKsiazki(ilosc);
                 break;
             case 6:
+                int rok;
+                cout << "Podaj rok: ";
+                cin >> rok;
+                cin.ignore();
+                Biblioteka::get_biblioteka()->wyswietlOpublikowaneKsiazkiPo(rok);
+                break;
+            case 7:
                 break;
             default:
                 // cout << "Nie ma takiej opcji" << endl;  // Obsługa niepoprawnego wyboru
                 break;
         }
 
-    } while (wybor != 6);
+    } while (wybor != 7);
     RejestratorZdarzen::get_rejestratorZdarzen()->dodajZdarzenie("Powrot do menu glownego");
 }
 

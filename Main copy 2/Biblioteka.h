@@ -1,8 +1,6 @@
 #pragma once
 #include <cctype>
 #include <iostream>
-#include <map>
-#include <memory>
 #include <random>
 #include <string>
 #include <vector>
@@ -19,18 +17,10 @@ class Biblioteka {
     static Biblioteka* biblioteka;
     std::vector<Ksiazka*> ksiazki;
     size_t liczba_ksiazek;
-    // std::vector<Czytelnik> czytelnicy;
-    std::map<size_t, Czytelnik, CzytelnikComparator> czytelnicy;
+    std::vector<Czytelnik> czytelnicy;
     size_t last_id;
-    std::vector<std::shared_ptr<Obiekt>> usuniete_elementy;
+    std::vector<Obiekt*> usuniete_elementy;
     size_t liczba_usunietych;
-
-    // funktor
-    // struct czyOpublikowana {
-    //     int rok;
-    //     czyOpublikowana(int rok) : rok(rok) {}
-    //     bool operator()(const Ksiazka* ksiazka) const { return ksiazka->get_rok_wydania() > rok; }
-    // };
 
    public:
     static Biblioteka* get_biblioteka();
@@ -39,8 +29,7 @@ class Biblioteka {
     Biblioteka();
 
     // lista inicjalizacyjna
-    Biblioteka(std::vector<Ksiazka*>, size_t, std::map<size_t, Czytelnik, CzytelnikComparator>, size_t,
-               std::vector<std::shared_ptr<Obiekt>>, size_t);
+    Biblioteka(std::vector<Ksiazka*>, size_t, std::vector<Czytelnik>, size_t, std::vector<Obiekt*>, size_t);
 
     // konstruktor kopiujący
     Biblioteka(const Biblioteka&);
@@ -83,12 +72,12 @@ class Biblioteka {
     void zwroc();
     void zwrocKsiazke(long);
     void wyswietlUsuniete();
-    void wyswietlOpublikowaneKsiazkiPo(int rok);
+    // void powiekszTabliceElementow();
 
     // Gettery
     std::vector<Ksiazka*> get_ksiazki() const;
     size_t get_liczba_ksiazek() const;
-    std::map<size_t, Czytelnik, CzytelnikComparator> get_czytelnicy() const;
+    std::vector<Czytelnik> get_czytelnicy() const;
     size_t get_last_id() const;
     std::vector<Obiekt*> get_usuniete_elementy() const;
     size_t get_liczba_usunietych() const;
@@ -96,7 +85,7 @@ class Biblioteka {
     // Settery
     void set_ksiazki(std::vector<Ksiazka*>);
     void set_liczba_ksiazek(size_t);
-    void set_czytelnicy(std::map<size_t, Czytelnik, CzytelnikComparator>);
+    void set_czytelnicy(std::vector<Czytelnik>);
     void set_last_id(size_t);
     void set_usuniete_elementy(std::vector<Obiekt*>);
     void set_liczba_usunietych(size_t);

@@ -42,11 +42,7 @@ Czytelnik::Czytelnik(const Czytelnik& right)
       numer_ID(right.numer_ID),
       adres(right.adres),
       liczba_wypozyczonych_ksiazek(right.liczba_wypozyczonych_ksiazek),
-      licznik_wyswietlen(right.licznik_wyswietlen) {
-    for (const auto& ksiazka : right.wypozyczone_ksiazki) {
-        wypozyczone_ksiazki.push_back(new Ksiazka(*ksiazka));
-    }
-};
+      licznik_wyswietlen(right.licznik_wyswietlen){};
 
 // operator przypisania
 Czytelnik& Czytelnik::operator=(const Czytelnik& right) {
@@ -59,16 +55,9 @@ Czytelnik& Czytelnik::operator=(const Czytelnik& right) {
     numer_telefonu = right.numer_telefonu;
     numer_ID = right.numer_ID;
     adres = right.adres;
+    wypozyczone_ksiazki = right.wypozyczone_ksiazki;
     liczba_wypozyczonych_ksiazek = right.liczba_wypozyczonych_ksiazek;
     licznik_wyswietlen = right.licznik_wyswietlen;
-
-    for (auto& ksiazka : wypozyczone_ksiazki) {
-        delete ksiazka;
-    }
-    wypozyczone_ksiazki.clear();
-    for (const auto& ksiazka : right.wypozyczone_ksiazki) {
-        wypozyczone_ksiazki.push_back(new Ksiazka(*ksiazka));
-    }
 
     return *this;
 };
@@ -119,12 +108,8 @@ std::ostream& operator<<(std::ostream& output, const Czytelnik& czytelnik) {
     if (czytelnik.liczba_wypozyczonych_ksiazek == 0) {
         output << "Brak wypozyczonych ksiazek" << std::endl;
     } else {
-        for (const auto& ksiazka : czytelnik.wypozyczone_ksiazki) {
-            std::tuple<std::string, std::string> tytul_i_autor = ksiazka->tytul_i_autor();
-            std::string tytul = std::get<0>(tytul_i_autor);
-            std::string autor = std::get<1>(tytul_i_autor);
-            output << "  " << tytul << " - " << autor << std::endl;
-            // output << "  " << ksiazka->get_tytul() << " - " << ksiazka->get_autor() << std::endl;
+        for (size_t i = 0; i < czytelnik.liczba_wypozyczonych_ksiazek; i++) {
+            output << "  " << czytelnik[i].get_tytul() << " - " << czytelnik[i].get_autor() << std::endl;
         }
     }
     output << "Licznik wyswietlen: " << czytelnik.licznik_wyswietlen << std::endl;
@@ -152,16 +137,15 @@ std::istream& operator>>(std::istream& input, Czytelnik& czytelnik) {
 // destruktor
 Czytelnik::~Czytelnik() {
     for (auto& ksiazka : wypozyczone_ksiazki) {
-        ksiazka->set_wypozyczona(false);
-        delete ksiazka;
+        ksiazka.set_wypozyczona(false);
     }
 }
 
 Czytelnik::Adres::~Adres() {}
 
-Ksiazka& Czytelnik::operator[](size_t index) { return *wypozyczone_ksiazki[index]; };
+Ksiazka& Czytelnik::operator[](size_t index) { return wypozyczone_ksiazki[index]; };
 
-const Ksiazka& Czytelnik::operator[](size_t index) const { return *wypozyczone_ksiazki[index]; };
+const Ksiazka& Czytelnik::operator[](size_t index) const { return wypozyczone_ksiazki[index]; };
 
 // Metody
 
@@ -217,13 +201,13 @@ void Czytelnik::edytuj() {
 
 void Czytelnik::dodaj(Ksiazka& ksiazka) {
     // powiekszTablice();
-    wypozyczone_ksiazki.push_back(&ksiazka);
+    wypozyczone_ksiazki.push_back(ksiazka);
     liczba_wypozyczonych_ksiazek++;
 };
 
 void Czytelnik::usun(long ISBN) {
     for (auto it = wypozyczone_ksiazki.begin(); it != wypozyczone_ksiazki.end(); it++) {
-        if ((*it)->get_ISBN() == ISBN) {
+        if (it->get_ISBN() == ISBN) {
             wypozyczone_ksiazki.erase(it);
             liczba_wypozyczonych_ksiazek--;
             break;
@@ -271,7 +255,7 @@ unsigned int Czytelnik::get_numer_ID() const { return numer_ID; };
 Czytelnik::Adres Czytelnik::get_adres() const { return adres; };
 std::string Czytelnik::get_ulica() const { return adres.ulica; };
 unsigned int Czytelnik::get_numer_domu() const { return adres.numer_domu; };
-std::vector<Ksiazka*> Czytelnik::get_wypozyczone_ksiazki() const { return wypozyczone_ksiazki; };
+std::vector<Ksiazka> Czytelnik::get_wypozyczone_ksiazki() const { return wypozyczone_ksiazki; };
 size_t Czytelnik::get_liczba_wypozyczonych_ksiazek() const { return liczba_wypozyczonych_ksiazek; };
 
 // Settery
@@ -282,7 +266,7 @@ void Czytelnik::set_numer_ID(unsigned int numer_ID) { this->numer_ID = numer_ID;
 void Czytelnik::set_adres(Adres adres) { this->adres = adres; };
 void Czytelnik::set_ulica(std::string ulica) { adres.set_ulica(ulica); };
 void Czytelnik::set_numer_domu(unsigned int numer_domu) { adres.set_numer_domu(numer_domu); };
-void Czytelnik::set_wypozyczone_ksiazki(std::vector<Ksiazka*> wypozyczone_ksiazki) {
+void Czytelnik::set_wypozyczone_ksiazki(std::vector<Ksiazka> wypozyczone_ksiazki) {
     this->wypozyczone_ksiazki = wypozyczone_ksiazki;
 };
 void Czytelnik::set_liczba_wypozyczonych_ksiazek(size_t liczba_wypozyczonych_ksiazek) {

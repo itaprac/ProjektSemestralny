@@ -51,6 +51,8 @@ class Ksiazka : public Obiekt {
     void edytuj() override;
     void gen_data() override;
     void ocen();
+    std::tuple<std::string, std::string> tytul_i_autor() const;
+    void get_data() const;
 
     // Gettery
     std::string get_tytul() const;

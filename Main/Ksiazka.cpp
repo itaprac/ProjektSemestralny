@@ -235,6 +235,8 @@ void Ksiazka::gen_data() {
     }
 }
 
+std::tuple<std::string, std::string> Ksiazka::tytul_i_autor() const { return std::make_tuple(tytul, autor); }
+
 // Gettery
 std::string Ksiazka::get_tytul() const { return tytul; };
 std::string Ksiazka::get_autor() const { return autor; };
@@ -254,4 +256,4 @@ void Ksiazka::set_rok_wydania(unsigned int rok_wydania) { this->rok_wydania = ro
 void Ksiazka::set_ISBN(long ISBN) { this->ISBN = ISBN; };
 void Ksiazka::set_wypozyczona(bool wypozyczona) { this->wypozyczona = wypozyczona; };
 void Ksiazka::set_oceny(std::vector<int> oceny) { this->oceny = oceny; };
-}
+}  // namespace Books

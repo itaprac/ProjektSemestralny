@@ -10,6 +10,10 @@ namespace Readers {
 using namespace Books;
 using namespace Objects;
 
+struct CzytelnikComparator {
+    bool operator()(const size_t& l, const size_t& r) const { return l < r; }
+};
+
 class Czytelnik final : public Obiekt {
     class Adres {
         std::string ulica;
@@ -97,7 +101,7 @@ class Czytelnik final : public Obiekt {
     std::string numer_telefonu;
     unsigned int numer_ID;
     Adres adres;
-    std::vector<Ksiazka> wypozyczone_ksiazki;
+    std::vector<Ksiazka*> wypozyczone_ksiazki;
     size_t liczba_wypozyczonych_ksiazek;
     mutable size_t licznik_wyswietlen;
 
@@ -152,7 +156,7 @@ class Czytelnik final : public Obiekt {
     Adres get_adres() const;
     std::string get_ulica() const;
     unsigned int get_numer_domu() const;
-    std::vector<Ksiazka> get_wypozyczone_ksiazki() const;
+    std::vector<Ksiazka*> get_wypozyczone_ksiazki() const;
     size_t get_liczba_wypozyczonych_ksiazek() const;
 
     // Settery
@@ -163,7 +167,7 @@ class Czytelnik final : public Obiekt {
     void set_adres(Adres);
     void set_ulica(std::string);
     void set_numer_domu(unsigned int);
-    void set_wypozyczone_ksiazki(std::vector<Ksiazka>);
+    void set_wypozyczone_ksiazki(std::vector<Ksiazka*>);
     void set_liczba_wypozyczonych_ksiazek(size_t);
 };
 }  // namespace Readers

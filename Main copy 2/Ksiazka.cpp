@@ -8,6 +8,7 @@
 // #include "dane.h"
 #include "funkcje.h"
 
+namespace Books {
 // konstruktor domyślny
 Ksiazka::Ksiazka() {
     tytul = "tytul";
@@ -253,3 +254,4 @@ void Ksiazka::set_rok_wydania(unsigned int rok_wydania) { this->rok_wydania = ro
 void Ksiazka::set_ISBN(long ISBN) { this->ISBN = ISBN; };
 void Ksiazka::set_wypozyczona(bool wypozyczona) { this->wypozyczona = wypozyczona; };
 void Ksiazka::set_oceny(std::vector<int> oceny) { this->oceny = oceny; };
+}
